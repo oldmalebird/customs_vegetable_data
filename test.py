@@ -63,7 +63,7 @@ for i in range(0, len(df.index)):
     if type(df['截至时间'][i]) == str:
         #print(type(len(df['产品'][i])))
         tempMonth = df['截至时间'][i]
-        print('tempStr新赋值为：', tempMonth)
+        #print('tempStr新赋值为：', tempMonth)
         i += 1
     else:
         df['截至时间'][i] = tempMonth
@@ -72,11 +72,13 @@ for i in range(0, len(df.index)):
 
 #填补时间列并删除时间列的空格
 df['时间'] = df['截至时间'].str.slice(10)
-tempcol_1 = df['时间'].str.split(' ').str[0]
-tempcol_2 = df['时间'].str.split(' ').str[1]
-df['时间'] = tempcol_1  + tempcol_2
+df['时间'] = df['时间'].str.replace('年', '-')
+df['时间'] = df['时间'].str.replace(' ', '')
+df['时间'] = df['时间'].str.replace('月', '-1')
+
 #转成时间格式不成功
-#pd.to_datetime(df['时间'])
+df['时间'] = pd.to_datetime(df['时间'])
+
 
 #删除无意义行
 df.dropna(subset = ['贸易方式'], inplace = True)
@@ -105,34 +107,9 @@ print(df_merge.head())
 print(df_merge.tail())
 print(df_merge.describe())
 '''
+print(df_merge.head())
 writer = r"C:\Users\cva_b\Desktop\test.xlsx"
 df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计')
-
-
-
-
-
-
-
-
-
-
-
-
-
-#python D:\Github\customs_vegetable_data\test.py
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
