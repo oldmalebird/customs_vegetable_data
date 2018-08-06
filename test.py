@@ -75,13 +75,12 @@ df['时间'] = df['截至时间'].str.slice(10)
 df['时间'] = df['时间'].str.replace('年', '-')
 df['时间'] = df['时间'].str.replace(' ', '')
 df['时间'] = df['时间'].str.replace('月', '-1')
-
-#转成时间格式不成功
-df['时间'] = pd.to_datetime(df['时间'])
-
+ #转成时间格式
+df['时间'] = pd.to_datetime(df['时间']).dt.date
 
 #删除无意义行
 df.dropna(subset = ['贸易方式'], inplace = True)
+print('删除无意义行后的行数：', len(df.index))
 
 #填补类别信息
 vegCatAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
@@ -94,6 +93,22 @@ df_merge =pd.merge(df, vegCat, how='left')
 cols = list(df_merge)
 cols.insert(1, cols.pop(cols.index('类别')))
 df_merge = df_merge.ix[:, cols]
+print('填补类别信息后的行数', len(df_merge.index))
+
+#删除“蔬菜种子.”
+df_merge = df_merge.loc[df_merge['产品'] != '蔬菜种子.']
+print('删除‘蔬菜种子.’的行数：', len(df_merge.index))
+#查看重复项，结果发现重复的除了蔬菜，还有莲藕
+#df_merge['dup'] = df_merge.duplicated(keep = False)
+#print(df_merge.loc[df_merge['dup'] == True])
+
+#删除重复项
+df_merge.drop_duplicates(keep = 'first', inplace = True)
+print('删除重复项后的行数：', len(df_merge.index))
+
+#添加不含合计的数据
+df_no_sum = df_merge.loc[df_merge['贸易方式'] != '贸易方式合计']
+print('不含合计数的行数：', len(df_no_sum.index))
 
 '''
 print('以下是df的情况：')
@@ -107,13 +122,14 @@ print(df_merge.head())
 print(df_merge.tail())
 print(df_merge.describe())
 '''
-print(df_merge.head())
-writer = r"C:\Users\cva_b\Desktop\test.xlsx"
-df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计')
 
+#writer = r"C:\Users\cva_b\Desktop\test.xlsx"
+#df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计')
+#df_no_sum.to_excel(writer, sheet_name='Cleaned')
 
-
-
+writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\test.xlsx")
+df_no_sum.to_excel(writer, sheet_name='Cleaned', index = False)
+df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计', index = False)
 
 
 #python D:\Github\customs_vegetable_data\test.py
