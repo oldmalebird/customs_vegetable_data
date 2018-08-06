@@ -5,11 +5,7 @@ import pandas as pd
 #读取原始数据
 docAddress = r'D:\Data\信息中心进出口\原始数据\2018\蔬菜水果_省201801-201803.xls'
 df_origin = pd.read_excel(docAddress,sheet_name='Report', header = None, names = ["产品","地区","当期出口金额（万美元）","当期进口金额（万美元）","当期出口数量（吨）","当期进口数量（吨）","一至当月出口金额（万美元）","一至当月进口金额（万美元）","一至当月出口数量（吨）","一至当月进口数量（吨）"], skiprows = 8)
-'''
-print(df_origin.head(10))
-print(df_origin.tail(10))
-print('读取的df：', len(df_origin.index))
-'''
+
 #新建一个dataframe，存放读取的dataframe
 df = pd.DataFrame(columns = ["产品", "地区","截至时间","时间","当期出口金额（万美元）","当期进口金额（万美元）","当期出口数量（吨）","当期进口数量（吨）","一至当月出口金额（万美元）","一至当月进口金额（万美元）","一至当月出口数量（吨）","一至当月进口数量（吨）"])
 df['产品'] = df_origin['产品']
@@ -23,8 +19,6 @@ df['一至当月进口金额（万美元）'] = df_origin['一至当月进口金
 df['一至当月出口数量（吨）'] = df_origin['一至当月出口数量（吨）']
 df['一至当月进口数量（吨）'] = df_origin['一至当月进口数量（吨）']
 print(df.head(5))
-
-
 print('新df的行数：', len(df.index))
 print(type(df['产品'][0]) == str)
 print(df['产品'][0].startswith('月'))
@@ -32,41 +26,30 @@ print(df['产品'][0].startswith('月'))
 #如果‘产品’列在i行有月份信息，则’截至时间'列的i行数据为该月份信息
 for i in range(0, len(df.index)):
     if type(df['产品'][i]) == str:
-        #print("df['产品'][i]为str, i=", i)
-        #print(df['产品'][i])
         if df['产品'][i].startswith('月'):
-            #print(df['产品'][i])
             df['截至时间'][i] = df['产品'][i]
             print('有时间信息的行数为：', i)
     i += 1
-    #print('i+1=', i)
+
 
 #填补产品列的空白
-#这种改变列的方法不行
-#df['产品'] = df['产品'].astype(string)
 tempStr =''
 for i in range(0, len(df.index)):
     if type(df['产品'][i]) == str:
-        #print(type(len(df['产品'][i])))
         tempStr = df['产品'][i]
-        #print('tempStr新赋值为：', tempStr)
         i += 1
     else:
         df['产品'][i] = tempStr
-        #print("测试df['产品'][i] = tempStr是否赋值成功", df['产品'][i] )
         i += 1
 
 #填补截至时间列的空白
 tempMonth =''
 for i in range(0, len(df.index)):
     if type(df['截至时间'][i]) == str:
-        #print(type(len(df['产品'][i])))
         tempMonth = df['截至时间'][i]
-        #print('tempStr新赋值为：', tempMonth)
         i += 1
     else:
         df['截至时间'][i] = tempMonth
-        #print("测试df['截至时间'][i] = tempStr是否赋值成功", df['截至时间'][i] )
         i += 1
 
 #填补时间列并删除时间列的空格
@@ -97,9 +80,6 @@ print('填补类别信息后的行数', len(df_merge.index))
 #删除“蔬菜种子.”
 df_merge = df_merge.loc[df_merge['产品'] != '蔬菜种子.']
 print('删除‘蔬菜种子.’的行数：', len(df_merge.index))
-#查看重复项，结果发现重复的除了蔬菜，还有莲藕
-#df_merge['dup'] = df_merge.duplicated(keep = False)
-#print(df_merge.loc[df_merge['dup'] == True])
 
 #删除重复项
 df_merge.drop_duplicates(keep = 'first', inplace = True)
@@ -112,10 +92,8 @@ df_merge['地区'] = df_merge['地区'].str.replace('内蒙', '内蒙古')
 df_no_sum = df_merge.loc[df_merge['地区'] != '全国合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-
 writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\test.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index = False)
 df_merge.to_excel(writer, sheet_name='Cleaned含全国合计', index = False)
-
 
 #python D:\Github\customs_vegetable_data\test.py
