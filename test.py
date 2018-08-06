@@ -44,7 +44,7 @@ for i in range(0, len(df.index)):
 #填补产品列的空白
 #这种改变列的方法不行
 #df['产品'] = df['产品'].astype(string)
-tempStr =''
+tempStr = ''
 for i in range(0, len(df.index)):
     if type(df['产品'][i]) == str:
         #print(type(len(df['产品'][i])))
@@ -57,7 +57,7 @@ for i in range(0, len(df.index)):
         i += 1
 
 #填补截至时间列的空白
-tempMonth =''
+tempMonth = ''
 for i in range(0, len(df.index)):
     if type(df['截至时间'][i]) == str:
         #print(type(len(df['产品'][i])))
@@ -83,10 +83,10 @@ print('删除无意义行后的行数：', len(df.index))
 
 #填补类别信息
 vegCatAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
-vegCat = pd.read_excel(vegCatAddress,sheet_name='产品分类')
+vegCat = pd.read_excel(vegCatAddress, sheet_name='产品分类')
 print(vegCat.head())
 print(vegCat.tail())
-df_merge =pd.merge(df, vegCat, how='left')
+df_merge = pd.merge(df, vegCat, how='left')
 
 #将类别移到第二列
 cols = list(df_merge)
