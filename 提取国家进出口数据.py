@@ -1,6 +1,6 @@
 #提取海关进出口数据
 import pandas as pd
-#python D:\Github\customs_vegetable_data\test.py
+#python D:\Github\customs_vegetable_data\提取国家进出口数据.py
 
 #读取原始数据
 docAddress = r'D:\Data\信息中心进出口\原始数据\2018\蔬菜水果_国201801-201803.xls'
@@ -36,7 +36,6 @@ df['一至当月进口金额（万美元）'] = df_origin['一至当月进口金
 df['一至当月出口数量（吨）'] = df_origin['一至当月出口数量（吨）']
 df['一至当月进口数量（吨）'] = df_origin['一至当月进口数量（吨）']
 print(df.head(5))
-
 print('新df的行数：', len(df.index))
 print(type(df['产品'][0]) == str)
 print(df['产品'][0].startswith('月'))
@@ -44,41 +43,29 @@ print(df['产品'][0].startswith('月'))
 #如果‘产品’列在i行有月份信息，则’截至时间'列的i行数据为该月份信息
 for i in range(0, len(df.index)):
     if type(df['产品'][i]) == str:
-        #print("df['产品'][i]为str, i=", i)
-        #print(df['产品'][i])
         if df['产品'][i].startswith('月'):
-            #print(df['产品'][i])
             df['截至时间'][i] = df['产品'][i]
             print('有时间信息的行数为：', i)
     i += 1
-    #print('i+1=', i)
 
 #填补产品列的空白
-#这种改变列的方法不行
-#df['产品'] = df['产品'].astype(string)
 tempStr = ''
 for i in range(0, len(df.index)):
     if type(df['产品'][i]) == str:
-        #print(type(len(df['产品'][i])))
         tempStr = df['产品'][i]
-        #print('tempStr新赋值为：', tempStr)
         i += 1
     else:
         df['产品'][i] = tempStr
-        #print("测试df['产品'][i] = tempStr是否赋值成功", df['产品'][i] )
         i += 1
 
 #填补截至时间列的空白
 tempMonth = ''
 for i in range(0, len(df.index)):
     if type(df['截至时间'][i]) == str:
-        #print(type(len(df['产品'][i])))
         tempMonth = df['截至时间'][i]
-        #print('tempStr新赋值为：', tempMonth)
         i += 1
     else:
         df['截至时间'][i] = tempMonth
-        #print("测试df['截至时间'][i] = tempStr是否赋值成功", df['截至时间'][i] )
         i += 1
 
 #填补时间列并删除时间列的空格
@@ -140,4 +127,4 @@ writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\test.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge2.to_excel(writer, sheet_name='Cleaned含国家合计', index=False)
 
-#python D:\Github\customs_vegetable_data\test.py
+#python D:\Github\customs_vegetable_data\提取国家进出口数据.py
