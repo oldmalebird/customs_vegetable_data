@@ -22,5 +22,6 @@ ncolumns = df.columns.size
 for col in range(2):
     print(df.ix[:, col].unique())
     print()
-
+#各列唯一值
+df.pivot
 #python D:\Github\customs_vegetable_data\test.py
