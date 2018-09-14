@@ -4,7 +4,7 @@
 '''
 
 import os
-dir = r"D:\Data\信息中心进出口\数据处理\汇总"
+dir = r"D:\Data\from zzh\全球蔬菜\可视化\只含蔬菜不含醋栗\forSQL"
 dirs = os.listdir(dir)
 '''for dirc in dirs:
     print(dirc)
