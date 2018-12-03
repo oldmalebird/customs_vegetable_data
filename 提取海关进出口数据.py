@@ -3,7 +3,7 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\提取海关进出口数据.py
 
 #读取原始数据
-docAddress = r'D:\Data\信息中心进出口\原始数据\2018\蔬菜水果_关201801-201803.xls'
+docAddress = r"D:\Data\信息中心进出口\原始数据\2018\201810\蔬菜水果_关.xls"
 df_origin = pd.read_excel(
     docAddress,
     sheet_name='Report',
@@ -115,8 +115,9 @@ df_merge['海关地点'] = df_merge['海关地点'].str.replace('黄埔', '广�
 df_no_sum = df_merge.loc[df_merge['海关地点'] != '关口合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\test.xlsx")
+writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\蔬菜水果_关201810.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge.to_excel(writer, sheet_name='Cleaned含关口合计', index=False)
-
+writer.save()
+writer.close()
 #python D:\Github\customs_vegetable_data\提取海关进出口数据.py

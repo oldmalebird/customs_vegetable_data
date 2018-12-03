@@ -3,8 +3,16 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\提取贸易方式进出口数据.py
 
 #读取原始数据
-docAddress = r'D:\Data\信息中心进出口\原始数据\2018\蔬菜水果_贸201801-201803.xls'
-df_origin = pd.read_excel(docAddress,sheet_name='Report', header = None, names = ["产品","贸易方式","当期出口金额（万美元）","当期进口金额（万美元）","当期出口数量（吨）","当期进口数量（吨）","一至当月出口金额（万美元）","一至当月进口金额（万美元）","一至当月出口数量（吨）","一至当月进口数量（吨）"], skiprows = 8)
+docAddress = r"D:\Data\信息中心进出口\原始数据\2018\201810\蔬菜水果_贸.xls"
+df_origin = pd.read_excel(
+    docAddress,
+    sheet_name='Report',
+    header=None,
+    names=[
+        "产品", "贸易方式", "当期出口金额（万美元）", "当期进口金额（万美元）", "当期出口数量（吨）", "当期进口数量（吨）",
+        "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）", "一至当月进口数量（吨）"
+    ],
+    skiprows=8)
 
 #新建一个dataframe，存放读取的dataframe
 df = pd.DataFrame(columns=[
@@ -23,7 +31,6 @@ df['一至当月出口数量（吨）'] = df_origin['一至当月出口数量（
 df['一至当月进口数量（吨）'] = df_origin['一至当月进口数量（吨）']
 print(df.head(5))
 
-
 print('新df的行数：', len(df.index))
 print(type(df['产品'][0]) == str)
 print(df['产品'][0].startswith('月'))
@@ -35,9 +42,8 @@ for i in range(0, len(df.index)):
             df['截至时间'][i] = df['产品'][i]
     i += 1
 
-
 #填补产品列的空白
-tempStr =''
+tempStr = ''
 for i in range(0, len(df.index)):
     if type(df['产品'][i]) == str:
         tempStr = df['产品'][i]
@@ -61,15 +67,15 @@ df['时间'] = df['截至时间'].str.slice(10)
 df['时间'] = df['时间'].str.replace('年', '-')
 df['时间'] = df['时间'].str.replace(' ', '')
 df['时间'] = df['时间'].str.replace('月', '-1')
- #转成时间格式
+#转成时间格式
 df['时间'] = pd.to_datetime(df['时间']).dt.date
 
 #删除无意义行
-df.dropna(subset = ['贸易方式'], inplace = True)
+df.dropna(subset=['贸易方式'], inplace=True)
 print('删除无意义行后的行数：', len(df.index))
 
 #填补类别信息
-vegCatAddress = r"D:\中国蔬菜协会data\信息中心进出口\数据处理\vlookup.xlsx"
+vegCatAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
 vegCat = pd.read_excel(vegCatAddress, sheet_name='产品分类')
 print(vegCat.head())
 print(vegCat.tail())
@@ -86,7 +92,7 @@ df_merge = df_merge.loc[df_merge['产品'] != '蔬菜种子.']
 print('删除‘蔬菜种子.’的行数：', len(df_merge.index))
 
 #删除重复项
-df_merge.drop_duplicates(keep = 'first', inplace = True)
+df_merge.drop_duplicates(keep='first', inplace=True)
 print('删除重复项后的行数：', len(df_merge.index))
 
 #添加不含合计的数据
@@ -94,8 +100,9 @@ df_no_sum = df_merge.loc[df_merge['贸易方式'] != '贸易方式合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
 #写入excel文件
-writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\贸易方式进出口.xlsx")
-df_no_sum.to_excel(writer, sheet_name='Cleaned', index = False)
-df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计', index = False)
-
+writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\蔬菜水果_贸201810.xlsx")
+df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
+df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计', index=False)
+writer.save()
+writer.close()
 #python D:\Github\customs_vegetable_data\提取贸易方式进出口数据.py
