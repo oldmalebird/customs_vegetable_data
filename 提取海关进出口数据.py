@@ -3,7 +3,7 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\提取海关进出口数据.py
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\2018\201810\蔬菜水果_关.xls"
+docAddress = r"D:\Data\信息中心进出口\原始数据\大蒜、蘑菇_关_12.1-18.7.xls"
 df_origin = pd.read_excel(
     docAddress,
     sheet_name='Report',
@@ -80,6 +80,13 @@ df['时间'] = pd.to_datetime(df['时间']).dt.date
 #删除无意义行
 df.dropna(subset=['海关'], inplace=True)
 print('删除无意义行后的行数：', len(df.index))
+#专门处理大蒜和蘑菇数据：标准化名称
+df['产品'] = df['产品'].str.replace('大蒜（加工保藏）', '大蒜（加工）')
+df['产品'] = df['产品'].str.replace('大蒜（鲜冷冻）', '大蒜')
+df['产品'] = df['产品'].str.replace('蘑菇  （干）', '蘑菇（干）')
+#专门处理大蒜和蘑菇数据：删除蘑菇干以外的蘑菇数据
+df = df.loc[df['产品'] != '蘑菇（加工）']
+df = df.loc[df['产品'] != '蘑菇（鲜冷冻）']
 
 #填补类别信息
 vegCatAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
@@ -102,6 +109,8 @@ print('删除‘蔬菜种子.’的行数：', len(df_merge.index))
 df_merge.drop_duplicates(keep='first', inplace=True)
 print('删除重复项后的行数：', len(df_merge.index))
 
+df_merge['海关地点'] = df_merge['海关地点'].str.replace('乌关区', '乌鲁木齐')
+
 #删除海关地点中的“海关”、“关区”字样
 df_merge['海关地点'] = df_merge['海关地点'].str.replace('海关', '')
 df_merge['海关地点'] = df_merge['海关地点'].str.replace('关区', '')
@@ -110,12 +119,14 @@ df_merge['海关地点'] = df_merge['海关地点'].str.replace('关区', '')
 df_merge['海关地点'] = df_merge['海关地点'].str.replace('拱北', '珠海')
 df_merge['海关地点'] = df_merge['海关地点'].str.replace('海口', '海口市')
 df_merge['海关地点'] = df_merge['海关地点'].str.replace('黄埔', '广州')
+df_merge['海关地点'] = df_merge['海关地点'].str.replace('哈尔滨区', '哈尔滨')
+df_merge['海关地点'] = df_merge['海关地点'].str.replace('满洲里关', '满洲里')
 
 #添加不含合计的数据
 df_no_sum = df_merge.loc[df_merge['海关地点'] != '关口合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\蔬菜水果_关201810.xlsx")
+writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\大蒜、蘑菇_关_2012-201807.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge.to_excel(writer, sheet_name='Cleaned含关口合计', index=False)
 writer.save()

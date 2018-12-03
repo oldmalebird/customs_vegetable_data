@@ -3,7 +3,7 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\test.py
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\2018\201810\蔬菜水果_省.xls"
+docAddress = r"D:\Data\信息中心进出口\原始数据\大蒜、蘑菇_省_12.1-18.7.xls"
 df_origin = pd.read_excel(
     docAddress,
     sheet_name='Report',
@@ -74,6 +74,14 @@ df['时间'] = pd.to_datetime(df['时间']).dt.date
 df.dropna(subset=['地区'], inplace=True)
 print('删除无意义行后的行数：', len(df.index))
 
+#专门处理大蒜和蘑菇数据：标准化名称
+df['产品'] = df['产品'].str.replace('大蒜（加工保藏）', '大蒜（加工）')
+df['产品'] = df['产品'].str.replace('大蒜（鲜冷冻）', '大蒜')
+df['产品'] = df['产品'].str.replace('蘑菇  （干）', '蘑菇（干）')
+#专门处理大蒜和蘑菇数据：删除蘑菇干以外的蘑菇数据
+df = df.loc[df['产品'] != '蘑菇（加工）']
+df = df.loc[df['产品'] != '蘑菇（鲜冷冻）']
+
 #填补类别信息
 vegCatAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
 vegCat = pd.read_excel(vegCatAddress, sheet_name='产品分类')
@@ -102,7 +110,7 @@ df_merge['地区'] = df_merge['地区'].str.replace('内蒙', '内蒙古')
 df_no_sum = df_merge.loc[df_merge['地区'] != '全国合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\蔬菜水果_省201810.xlsx")
+writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\大蒜、蘑菇_省212-201807.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge.to_excel(writer, sheet_name='Cleaned含全国合计', index=False)
 writer.save()
