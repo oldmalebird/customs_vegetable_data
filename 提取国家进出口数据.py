@@ -3,7 +3,7 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\提取国家进出口数据.py
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\大蒜、蘑菇_国_12.1-18.7.xls"
+docAddress = r"D:\Data\信息中心进出口\原始数据\2018\201809\蔬菜水果_国.xls"
 df_origin = pd.read_excel(
     docAddress,
     sheet_name='Report',
@@ -14,11 +14,7 @@ df_origin = pd.read_excel(
         "一至当月进口数量（吨）"
     ],
     skiprows=8)
-'''
-print(df_origin.head(10))
-print(df_origin.tail(10))
-print('读取的df：', len(df_origin.index))
-'''
+
 #新建一个dataframe，存放读取的dataframe
 df = pd.DataFrame(columns=[
     "产品", "国家（数据源所用名称）", "截至时间", "时间", "当期出口金额（万美元）", "当期进口金额（万美元）",
@@ -131,7 +127,7 @@ print('填补国家标准名称后的行数', len(df_merge2.index))
 df_no_sum = df_merge2.loc[df_merge2['国家标准名称'] != '国家合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\大蒜、蘑菇_国2012-201807.xlsx")
+writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\国201809.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge2.to_excel(writer, sheet_name='Cleaned含国家合计', index=False)
 writer.save()
