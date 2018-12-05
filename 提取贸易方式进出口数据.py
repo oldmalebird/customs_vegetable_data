@@ -3,7 +3,7 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\提取贸易方式进出口数据.py
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\大蒜、蘑菇_贸_12.1-18.7.xls"
+docAddress = r"D:\Data\信息中心进出口\原始数据\大蒜、蘑菇_贸 12-16_edit.xls"
 df_origin = pd.read_excel(
     docAddress,
     sheet_name='Report',
@@ -108,7 +108,7 @@ df_no_sum = df_merge.loc[df_merge['贸易方式'] != '贸易方式合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
 #写入excel文件
-writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\大蒜、蘑菇_贸2012-201807.xlsx")
+writer = pd.ExcelWriter(r"C:\Users\cva_b\Desktop\大蒜、蘑菇_贸2012-2016.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计', index=False)
 writer.save()
