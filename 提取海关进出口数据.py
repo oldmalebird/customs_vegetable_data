@@ -85,8 +85,8 @@ df['产品'] = df['产品'].str.replace('大蒜（加工保藏）', '大蒜（�
 df['产品'] = df['产品'].str.replace('大蒜（鲜冷冻）', '大蒜')
 df['产品'] = df['产品'].str.replace('蘑菇  （干）', '蘑菇（干）')
 #专门处理大蒜和蘑菇数据：删除蘑菇干以外的蘑菇数据
-df = df.loc[df['产品'] != '蘑菇（加工）']
-df = df.loc[df['产品'] != '蘑菇（鲜冷冻）']
+# df = df.loc[df['产品'] != '蘑菇（加工）']
+# df = df.loc[df['产品'] != '蘑菇（鲜冷冻）']
 
 #填补类别信息
 vegCatAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
