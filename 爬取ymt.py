@@ -2,14 +2,15 @@ import time
 import requests
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
-
+import json
+'''
 client = MongoClient()  # mongodb server
 songs = client.kugou_db.songs  # songs collection
 headers = {
     'user-Agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.75 Safari/537.36'
 }
-
+'''
 
 def get_info(url):
     '''获取酷狗音乐Top500数据'''
@@ -31,7 +32,7 @@ def get_info(url):
         print(song_id)
         print('------------------------------------------')
 
-
+'''
 if __name__ == '__main__':
     # 列表生成器生成需要遍历的url
     urls = [
@@ -41,3 +42,4 @@ if __name__ == '__main__':
     for url in urls:
         get_info(url)
         time.sleep(1)
+'''
