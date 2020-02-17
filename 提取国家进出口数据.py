@@ -3,7 +3,7 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\提取国家进出口数据.py
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\2019\蔬菜水果_国201908.xls"
+docAddress = r"D:\Data\信息中心进出口\原始数据\2019\蔬菜水果_国201912.xls"
 df_origin = pd.read_excel(
     docAddress,
     sheet_name='Report',
@@ -127,7 +127,7 @@ print('填补国家标准名称后的行数', len(df_merge2.index))
 df_no_sum = df_merge2.loc[df_merge2['国家标准名称'] != '国家合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2019\蔬菜水果_国201908.xlsx")
+writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2019\蔬菜水果_国201912.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge2.to_excel(writer, sheet_name='Cleaned含国家合计', index=False)
 writer.save()
