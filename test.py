@@ -6,22 +6,5 @@ df = pd.read_excel(docAddress, sheet_name='全国蔬菜面积与产量')
 print(df.head())
 print()
 print(df.tail())
-
-print()
-df.info()
-print()
-print(df.describe())
-print()
-#检查重复数据
-print('重复行数：', sum(df.duplicated()))
-print("各列唯一值数量：")
-print()
-print(df.nunique())
-print()
-ncolumns = df.columns.size
-for col in range(2):
-    print(df.ix[:, col].unique())
-    print()
-#各列唯一值
-df.pivot
-#python D:\Github\customs_vegetable_data\test.py
+df["节目"] = "节目"
+print(df.head())
