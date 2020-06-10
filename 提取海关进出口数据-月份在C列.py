@@ -1,5 +1,7 @@
-#提取海关进出口数据 月份在C列
+#提取省进出口数据 这次月份信息不在A列，在C列
+
 import pandas as pd
+#python D:\Github\customs_vegetable_data\提取海关进出口数据.py
 
 #读取原始数据
 docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_关202001-04.xls"
@@ -11,7 +13,7 @@ df_origin = pd.read_excel(
         "产品", "海关", "当期出口金额（万美元）", "当期进口金额（万美元）", "当期出口数量（吨）", "当期进口数量（吨）",
         "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）", "一至当月进口数量（吨）"
     ],
-    skiprows=8)
+    skiprows=9)
 '''
 print(df_origin.head(10))
 print(df_origin.tail(10))
@@ -44,7 +46,7 @@ print('新df的行数：', len(df.index))
 for i in range(0, len(df.index)):
     if type(df['当期出口金额（万美元）'][i]) == str:
         if df['当期出口金额（万美元）'][i].startswith('月'):
-            df['截至时间'][i] = df['产品'][i]
+            df['截至时间'][i] = df['当期出口金额（万美元）'][i]
             print('有时间信息的行数为：', i)
     i += 1
 

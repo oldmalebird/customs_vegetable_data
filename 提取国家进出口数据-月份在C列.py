@@ -1,31 +1,28 @@
-#提取海关进出口数据 月份在C列
+#提取国家进出口数据 月份信息在C列
+
 import pandas as pd
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_关202001-04.xls"
+docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_国202001-04.xls"
 df_origin = pd.read_excel(
     docAddress,
     sheet_name='Report',
     header=None,
     names=[
-        "产品", "海关", "当期出口金额（万美元）", "当期进口金额（万美元）", "当期出口数量（吨）", "当期进口数量（吨）",
-        "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）", "一至当月进口数量（吨）"
+        "产品", "国家（数据源所用名称）", "当期出口金额（万美元）", "当期进口金额（万美元）", "当期出口数量（吨）",
+        "当期进口数量（吨）", "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）",
+        "一至当月进口数量（吨）"
     ],
-    skiprows=8)
-'''
-print(df_origin.head(10))
-print(df_origin.tail(10))
-print('读取的df：', len(df_origin.index))
-'''
+    skiprows=9)
+
 #新建一个dataframe，存放读取的dataframe
 df = pd.DataFrame(columns=[
-    "产品", "海关", "海关地点", "截至时间", "时间", "当期出口金额（万美元）", "当期进口金额（万美元）",
+    "产品", "国家（数据源所用名称）", "截至时间", "时间", "当期出口金额（万美元）", "当期进口金额（万美元）",
     "当期出口数量（吨）", "当期进口数量（吨）", "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）",
     "一至当月进口数量（吨）"
 ])
 df['产品'] = df_origin['产品']
-df['海关'] = df_origin['海关']
-df['海关地点'] = df_origin['海关']
+df['国家（数据源所用名称）'] = df_origin['国家（数据源所用名称）']
 df['当期出口金额（万美元）'] = df_origin['当期出口金额（万美元）']
 df['当期进口金额（万美元）'] = df_origin['当期进口金额（万美元）']
 df['当期出口数量（吨）'] = df_origin['当期出口数量（吨）']
@@ -35,7 +32,6 @@ df['一至当月进口金额（万美元）'] = df_origin['一至当月进口金
 df['一至当月出口数量（吨）'] = df_origin['一至当月出口数量（吨）']
 df['一至当月进口数量（吨）'] = df_origin['一至当月进口数量（吨）']
 print(df.head(5))
-
 print('新df的行数：', len(df.index))
 # print(type(df['产品'][0]) == str)
 # print(df['产品'][0].startswith('月'))
@@ -77,8 +73,9 @@ df['时间'] = df['时间'].str.replace('月', '-1')
 df['时间'] = pd.to_datetime(df['时间']).dt.date
 
 #删除无意义行
-df.dropna(subset=['海关'], inplace=True)
+df.dropna(subset=['国家（数据源所用名称）'], inplace=True)
 print('删除无意义行后的行数：', len(df.index))
+
 #专门处理大蒜和蘑菇数据：标准化名称
 df['产品'] = df['产品'].str.replace('大蒜（加工保藏）', '大蒜（加工）')
 df['产品'] = df['产品'].str.replace('大蒜（鲜冷冻）', '大蒜')
@@ -103,33 +100,36 @@ print('填补类别信息后的行数', len(df_merge.index))
 #删除“蔬菜种子.”
 df_merge = df_merge.loc[df_merge['产品'] != '蔬菜种子.']
 print('删除‘蔬菜种子.’的行数：', len(df_merge.index))
+#查看重复项，结果发现重复的除了蔬菜，还有莲藕
+#df_merge['dup'] = df_merge.duplicated(keep = False)
+#print(df_merge.loc[df_merge['dup'] == True])
 
 #删除重复项
 df_merge.drop_duplicates(keep='first', inplace=True)
 print('删除重复项后的行数：', len(df_merge.index))
 
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('乌关区', '乌鲁木齐')
+#填补国家标准名称
+vlookupAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
+countryName = pd.read_excel(
+    vlookupAddress, sheet_name='国家标准名称', usecols=[0, 1])
+print(countryName.head())
+print(countryName.tail())
+df_merge2 = pd.merge(df_merge, countryName, how='left')
+print(df_merge2.head())
 
-#删除海关地点中的“海关”、“关区”字样
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('海关', '')
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('关区', '')
-
-#海关地点替换：“拱北”改为“珠海”，“黄埔”改为“广州”，“海口”改为“海口市”，以便数据可视化软件对该地点进行识别
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('拱北', '珠海')
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('海口', '海口市')
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('黄埔', '广州')
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('哈尔滨区', '哈尔滨')
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('满洲里关', '满洲里')
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('石家庄区', '石家庄')
-df_merge['海关地点'] = df_merge['海关地点'].str.replace('呼特', '呼和浩特')
+#将国家标准名称移到第四列
+cols = list(df_merge2)
+cols.insert(3, cols.pop(cols.index('国家标准名称')))
+df_merge2 = df_merge2.ix[:, cols]
+print('填补国家标准名称后的行数', len(df_merge2.index))
 
 #添加不含合计的数据
-df_no_sum = df_merge.loc[df_merge['海关地点'] != '关口合计']
+df_no_sum = df_merge2.loc[df_merge2['国家标准名称'] != '国家合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_关202001-04.xlsx")
+writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_国202001-04.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
-df_merge.to_excel(writer, sheet_name='Cleaned含关口合计', index=False)
+df_merge2.to_excel(writer, sheet_name='Cleaned含国家合计', index=False)
 writer.save()
 writer.close()
-#python D:\Github\customs_vegetable_data\提取海关进出口数据.py
+#python D:\Github\customs_vegetable_data\提取国家进出口数据.py

@@ -1,4 +1,4 @@
-#提取海关进出口数据
+#提取国家进出口数据
 import pandas as pd
 #python D:\Github\customs_vegetable_data\提取国家进出口数据.py
 
