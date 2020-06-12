@@ -92,7 +92,7 @@ df_merge = pd.merge(df, vegCat, how='left')
 #将类别移到第二列
 cols = list(df_merge)
 cols.insert(1, cols.pop(cols.index('类别')))
-df_merge = df_merge.ix[:, cols]
+df_merge = df_merge.loc[:, cols]
 print('填补类别信息后的行数', len(df_merge.index))
 
 #删除“蔬菜种子.”
@@ -108,7 +108,7 @@ df_no_sum = df_merge.loc[df_merge['贸易方式'] != '贸易方式合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
 #写入excel文件
-writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_贸202001-04.xlsx")
+writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_贸202001-04-test.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计', index=False)
 writer.save()

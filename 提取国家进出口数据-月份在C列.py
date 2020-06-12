@@ -94,7 +94,7 @@ df_merge = pd.merge(df, vegCat, how='left')
 #将类别移到第二列
 cols = list(df_merge)
 cols.insert(1, cols.pop(cols.index('类别')))
-df_merge = df_merge.ix[:, cols]
+df_merge = df_merge.loc[:, cols]
 print('填补类别信息后的行数', len(df_merge.index))
 
 #删除“蔬菜种子.”
@@ -120,7 +120,7 @@ print(df_merge2.head())
 #将国家标准名称移到第四列
 cols = list(df_merge2)
 cols.insert(3, cols.pop(cols.index('国家标准名称')))
-df_merge2 = df_merge2.ix[:, cols]
+df_merge2 = df_merge2.loc[:, cols]
 print('填补国家标准名称后的行数', len(df_merge2.index))
 
 #添加不含合计的数据

@@ -93,7 +93,7 @@ df_merge = pd.merge(df, vegCat, how='left')
 #将类别移到第二列
 cols = list(df_merge)
 cols.insert(1, cols.pop(cols.index('类别')))
-df_merge = df_merge.ix[:, cols]
+df_merge = df_merge.loc[:, cols]
 print('填补类别信息后的行数', len(df_merge.index))
 
 #删除“蔬菜种子.”
