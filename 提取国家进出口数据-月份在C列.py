@@ -3,17 +3,17 @@
 import pandas as pd
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_国202001-04.xls"
-df_origin = pd.read_excel(
-    docAddress,
-    sheet_name='Report',
-    header=None,
-    names=[
-        "产品", "国家（数据源所用名称）", "当期出口金额（万美元）", "当期进口金额（万美元）", "当期出口数量（吨）",
-        "当期进口数量（吨）", "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）",
-        "一至当月进口数量（吨）"
-    ],
-    skiprows=9)
+docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果 国 202005.xls"
+df_origin = pd.read_excel(docAddress,
+                          sheet_name='Report',
+                          header=None,
+                          names=[
+                              "产品", "国家（数据源所用名称）", "当期出口金额（万美元）",
+                              "当期进口金额（万美元）", "当期出口数量（吨）", "当期进口数量（吨）",
+                              "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）",
+                              "一至当月进口数量（吨）"
+                          ],
+                          skiprows=9)
 
 #新建一个dataframe，存放读取的dataframe
 df = pd.DataFrame(columns=[
@@ -40,7 +40,7 @@ print('新df的行数：', len(df.index))
 for i in range(0, len(df.index)):
     if type(df['当期出口金额（万美元）'][i]) == str:
         if df['当期出口金额（万美元）'][i].startswith('月'):
-            df['截至时间'][i] = df['产品'][i]
+            df['截至时间'][i] = df['当期出口金额（万美元）'][i]
             print('有时间信息的行数为：', i)
     i += 1
 
@@ -71,7 +71,8 @@ df['时间'] = df['时间'].str.replace(' ', '')
 df['时间'] = df['时间'].str.replace('月', '-1')
 #转成时间格式
 df['时间'] = pd.to_datetime(df['时间']).dt.date
-
+print('test-----------------------')
+print(df.head())
 #删除无意义行
 df.dropna(subset=['国家（数据源所用名称）'], inplace=True)
 print('删除无意义行后的行数：', len(df.index))
@@ -110,8 +111,9 @@ print('删除重复项后的行数：', len(df_merge.index))
 
 #填补国家标准名称
 vlookupAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
-countryName = pd.read_excel(
-    vlookupAddress, sheet_name='国家标准名称', usecols=[0, 1])
+countryName = pd.read_excel(vlookupAddress,
+                            sheet_name='国家标准名称',
+                            usecols=[0, 1])
 print(countryName.head())
 print(countryName.tail())
 df_merge2 = pd.merge(df_merge, countryName, how='left')
@@ -127,7 +129,7 @@ print('填补国家标准名称后的行数', len(df_merge2.index))
 df_no_sum = df_merge2.loc[df_merge2['国家标准名称'] != '国家合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_国202001-04.xlsx")
+writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_国202005.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge2.to_excel(writer, sheet_name='Cleaned含国家合计', index=False)
 writer.save()
