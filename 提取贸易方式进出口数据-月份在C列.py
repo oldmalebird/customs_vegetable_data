@@ -3,16 +3,16 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\提取贸易方式进出口数据.py
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_贸202006.xls"
-df_origin = pd.read_excel(docAddress,
-                          sheet_name='Report',
-                          header=None,
-                          names=[
-                              "产品", "贸易方式", "当期出口金额（万美元）", "当期进口金额（万美元）",
-                              "当期出口数量（吨）", "当期进口数量（吨）", "一至当月出口金额（万美元）",
-                              "一至当月进口金额（万美元）", "一至当月出口数量（吨）", "一至当月进口数量（吨）"
-                          ],
-                          skiprows=9)
+docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_贸_菜豆菜花07082000.xls"
+df_origin = pd.read_excel(
+    docAddress,
+    sheet_name='Report',
+    header=None,
+    names=[
+        "产品", "贸易方式", "当期出口金额（万美元）", "当期进口金额（万美元）", "当期出口数量（吨）", "当期进口数量（吨）",
+        "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）", "一至当月进口数量（吨）"
+    ],
+    skiprows=9)
 
 #新建一个dataframe，存放读取的dataframe
 df = pd.DataFrame(columns=[
@@ -108,7 +108,7 @@ df_no_sum = df_merge.loc[df_merge['贸易方式'] != '贸易方式合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
 #写入excel文件
-writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_贸202006.xlsx")
+writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_贸_菜豆菜花202001-05.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge.to_excel(writer, sheet_name='Cleaned含贸易方式合计', index=False)
 writer.save()

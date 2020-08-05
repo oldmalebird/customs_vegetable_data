@@ -3,17 +3,17 @@
 import pandas as pd
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_国202006.xls"
-df_origin = pd.read_excel(docAddress,
-                          sheet_name='Report',
-                          header=None,
-                          names=[
-                              "产品", "国家（数据源所用名称）", "当期出口金额（万美元）",
-                              "当期进口金额（万美元）", "当期出口数量（吨）", "当期进口数量（吨）",
-                              "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）",
-                              "一至当月进口数量（吨）"
-                          ],
-                          skiprows=9)
+docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_国_菜豆菜花07082000.xls"
+df_origin = pd.read_excel(
+    docAddress,
+    sheet_name='Report',
+    header=None,
+    names=[
+        "产品", "国家（数据源所用名称）", "当期出口金额（万美元）", "当期进口金额（万美元）", "当期出口数量（吨）",
+        "当期进口数量（吨）", "一至当月出口金额（万美元）", "一至当月进口金额（万美元）", "一至当月出口数量（吨）",
+        "一至当月进口数量（吨）"
+    ],
+    skiprows=9)
 
 #新建一个dataframe，存放读取的dataframe
 df = pd.DataFrame(columns=[
@@ -111,9 +111,8 @@ print('删除重复项后的行数：', len(df_merge.index))
 
 #填补国家标准名称
 vlookupAddress = r"D:\Data\信息中心进出口\数据处理\vlookup.xlsx"
-countryName = pd.read_excel(vlookupAddress,
-                            sheet_name='国家标准名称',
-                            usecols=[0, 1])
+countryName = pd.read_excel(
+    vlookupAddress, sheet_name='国家标准名称', usecols=[0, 1])
 print(countryName.head())
 print(countryName.tail())
 df_merge2 = pd.merge(df_merge, countryName, how='left')
@@ -129,7 +128,7 @@ print('填补国家标准名称后的行数', len(df_merge2.index))
 df_no_sum = df_merge2.loc[df_merge2['国家标准名称'] != '国家合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_国202006.xlsx")
+writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_国_菜豆菜花202001-05.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge2.to_excel(writer, sheet_name='Cleaned含国家合计', index=False)
 writer.save()
