@@ -4,7 +4,7 @@ import pandas as pd
 #python D:\Github\customs_vegetable_data\test.py
 
 #读取原始数据
-docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_省_菜豆菜花07082000.xls"
+docAddress = r"D:\Data\信息中心进出口\原始数据\2020\蔬菜水果_省202007.xls"
 df_origin = pd.read_excel(
     docAddress,
     sheet_name='Report',
@@ -111,7 +111,7 @@ df_merge['地区'] = df_merge['地区'].str.replace('内蒙', '内蒙古')
 df_no_sum = df_merge.loc[df_merge['地区'] != '全国合计']
 print('不含合计数的行数：', len(df_no_sum.index))
 
-writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_省_菜豆菜花202001-05.xlsx")
+writer = pd.ExcelWriter(r"D:\Data\信息中心进出口\数据处理\2020\蔬菜水果_省202007.xlsx")
 df_no_sum.to_excel(writer, sheet_name='Cleaned', index=False)
 df_merge.to_excel(writer, sheet_name='Cleaned含全国合计', index=False)
 writer.save()
